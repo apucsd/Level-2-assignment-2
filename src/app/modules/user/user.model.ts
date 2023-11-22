@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { IUser } from "./user.interface";
-
+import bcrypt from "bcrypt";
+import { config } from "../../config";
 const userSchema = new Schema<IUser>({
   id: { type: String, required: true, unique: true },
   username: {
@@ -23,7 +24,7 @@ const userSchema = new Schema<IUser>({
   },
   age: { type: Number, required: true },
   email: { type: String, required: true },
-  isActive: { type: Boolean, default: false },
+  isActive: { type: Boolean },
   hobbies: { type: [String], required: true },
   address: {
     street: { type: String, required: true },
@@ -43,8 +44,15 @@ const userSchema = new Schema<IUser>({
 
 //use middleware pre and post and post
 userSchema.pre("save", function (next) {
-  console.log(this);
+  this.password = bcrypt.hashSync(this.password, config.salt);
   next();
+});
+userSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    delete ret.password;
+    console.log("//////////////////////////////////////////////////", ret);
+    return ret;
+  },
 });
 
 const UserModel = model<IUser>("user", userSchema);
