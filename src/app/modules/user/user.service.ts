@@ -1,4 +1,4 @@
-import { IUser } from "./user.interface";
+import { IUser, Order } from "./user.interface";
 import UserModel from "./user.model";
 
 const createUserToDB = async (user: IUser): Promise<IUser> => {
@@ -35,8 +35,14 @@ const updateSingleUserFromDB = async (
   return result;
 };
 const deleteSingleUserFromDB = async (id: string) => {
-  //static method for updating single data
   const result = await UserModel.deleteOne({ id: id });
+  return result;
+};
+const createOrderToDB = async (id: string, order: Order) => {
+  const result = await UserModel.updateOne(
+    { id: id },
+    { $push: { orders: order } }
+  );
   return result;
 };
 
@@ -46,4 +52,5 @@ export const userServices = {
   getSingleUserFromDB,
   updateSingleUserFromDB,
   deleteSingleUserFromDB,
+  createOrderToDB,
 };

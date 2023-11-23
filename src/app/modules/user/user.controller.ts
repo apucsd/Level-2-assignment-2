@@ -96,7 +96,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
         data: null,
       });
     } else {
-      res.status(200).json({
+      res.status(500).json({
         success: false,
         message: "User not found",
         error: {
@@ -109,7 +109,31 @@ const deleteSingleUser = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message || "User not found",
-      error: error,
+      error: {
+        code: 404,
+        description: "User not found",
+      },
+    });
+  }
+};
+const createOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const order = req.body;
+    await userServices.createOrderToDB(userId, order);
+    res.status(200).json({
+      success: true,
+      message: "Order created successfully!",
+      data: null,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "User not found",
+      error: {
+        code: 404,
+        description: "User not found",
+      },
     });
   }
 };
@@ -120,4 +144,5 @@ export const userController = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  createOrder,
 };
