@@ -19,7 +19,7 @@ const getUserFromDB = async () => {
 
 const getSingleUserFromDB = async (id: string): Promise<IUser | null> => {
   //static method for getting single data
-  return await UserModel.findOne({ id: id });
+  return await UserModel.findOne({ userId: id });
 };
 const updateSingleUserFromDB = async (
   id: string,
@@ -27,7 +27,7 @@ const updateSingleUserFromDB = async (
 ): Promise<IUser | null> => {
   //static method for updating single data
   const result = await UserModel.findOneAndUpdate(
-    { id: id }, //find user by id
+    { userId: id }, //find user by id
     { $set: updatedUser }, //update user with updatedUser
     { new: true }
   );
@@ -35,23 +35,23 @@ const updateSingleUserFromDB = async (
   return result;
 };
 const deleteSingleUserFromDB = async (id: string) => {
-  const result = await UserModel.deleteOne({ id: id });
+  const result = await UserModel.deleteOne({ userId: id });
   return result;
 };
 const createOrderToDB = async (id: string, order: Order) => {
   const result = await UserModel.updateOne(
-    { id: id },
+    { userId: id },
     { $push: { orders: order } }
   );
   return result;
 };
 const getOrdersFromDB = async (id: string) => {
-  const result = await UserModel.findOne({ id: id }, { orders: 1 });
+  const result = await UserModel.findOne({ userId: id }, { orders: 1 });
   return result;
 };
 const calculateTotalPriceFromDB = async (id: string) => {
   const result = await UserModel.aggregate([
-    { $match: { id: id } },
+    { $match: { userId: id } },
     { $unwind: "$orders" },
     {
       $group: {

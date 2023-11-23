@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import { userServices } from "./user.service";
-import userValidationSchema from "./user.validation";
+import userValidationSchema, { orderValidationSchema } from "./user.validation";
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -42,11 +42,22 @@ const getSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
 
     const result = await userServices.getSingleUserFromDB(userId);
-    res.status(200).json({
-      success: true,
-      message: "User Fetched successfully",
-      data: result,
-    });
+    if (result) {
+      res.status(200).json({
+        success: true,
+        message: "User Fetched successfully",
+        data: result,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "User not found",
+        error: {
+          code: 404,
+          description: "User not found",
+        },
+      });
+    }
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -75,6 +86,10 @@ const updateSingleUser = async (req: Request, res: Response) => {
       res.status(500).json({
         success: false,
         message: "User not found",
+        error: {
+          code: 404,
+          description: "User not found",
+        },
       });
     }
   } catch (error: any) {
@@ -120,7 +135,8 @@ const createOrder = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const order = req.body;
-    await userServices.createOrderToDB(userId, order);
+    const zodValidateOrderSchema = orderValidationSchema.parse(order);
+    await userServices.createOrderToDB(userId, zodValidateOrderSchema);
     res.status(200).json({
       success: true,
       message: "Order created successfully!",

@@ -3,7 +3,7 @@ import { IUser } from "./user.interface";
 import bcrypt from "bcrypt";
 import { config } from "../../config";
 const userSchema = new Schema<IUser>({
-  id: { type: String, required: true, unique: true },
+  userId: { type: String, required: true, unique: true },
   username: {
     type: String,
     required: true,

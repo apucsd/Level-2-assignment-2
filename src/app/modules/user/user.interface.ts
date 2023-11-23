@@ -14,7 +14,7 @@ export type Order = {
   quantity: number;
 };
 export type IUser = {
-  id: string;
+  userId: string;
   username: string;
   password: string;
   fullName: FullName;
