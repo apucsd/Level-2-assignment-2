@@ -136,20 +136,31 @@ const createOrder = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const order = req.body;
     const zodValidateOrderSchema = orderValidationSchema.parse(order);
-    await userServices.createOrderToDB(userId, zodValidateOrderSchema);
-    res.status(200).json({
-      success: true,
-      message: "Order created successfully!",
-      data: null,
-    });
+    const result = await userServices.createOrderToDB(
+      userId,
+      zodValidateOrderSchema
+    );
+    if (result.modifiedCount > 0) {
+      res.status(200).json({
+        success: true,
+        message: "Order created successfully!",
+        data: null,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "User not found",
+        error: {
+          code: 404,
+          description: "User not found",
+        },
+      });
+    }
   } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error.message || "User not found",
-      error: {
-        code: 404,
-        description: "User not found",
-      },
+      error: error,
     });
   }
 };
