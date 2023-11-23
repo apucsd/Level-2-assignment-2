@@ -38,8 +38,28 @@ const getUsers = async (req: Request, res: Response) => {
     });
   }
 };
+const getSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const result = await userServices.getSingleUserFromDB(id);
+    res.status(201).json({
+      success: true,
+      message: "User Fetched successfully",
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "User not found",
+      error: error,
+    });
+  }
+};
 
 export const userController = {
   createUser,
   getUsers,
+  getSingleUser,
 };
