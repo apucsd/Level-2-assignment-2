@@ -26,13 +26,17 @@ const updateSingleUserFromDB = async (
   updatedUser: IUser
 ): Promise<IUser | null> => {
   //static method for updating single data
-  console.log(updatedUser, "///////////////////////////////", id);
   const result = await UserModel.findOneAndUpdate(
-    { id: id },
-    { $set: updatedUser },
+    { id: id }, //find user by id
+    { $set: updatedUser }, //update user with updatedUser
     { new: true }
   );
-  // console.log(result);
+
+  return result;
+};
+const deleteSingleUserFromDB = async (id: string) => {
+  //static method for updating single data
+  const result = await UserModel.deleteOne({ id: id });
   return result;
 };
 
@@ -41,4 +45,5 @@ export const userServices = {
   getUserFromDB,
   getSingleUserFromDB,
   updateSingleUserFromDB,
+  deleteSingleUserFromDB,
 };
