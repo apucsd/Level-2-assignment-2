@@ -40,12 +40,35 @@ const getUsers = async (req: Request, res: Response) => {
 };
 const getSingleUser = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    console.log(id);
-    const result = await userServices.getSingleUserFromDB(id);
+    const { userId } = req.params;
+
+    const result = await userServices.getSingleUserFromDB(userId);
     res.status(201).json({
       success: true,
       message: "User Fetched successfully",
+      data: result,
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "User not found",
+      error: error,
+    });
+  }
+};
+const updateSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const updatedUser = req.body;
+
+    const result = await userServices.updateSingleUserFromDB(
+      userId,
+      updatedUser
+    );
+    res.status(201).json({
+      success: true,
+      message: "User updated successfully!",
       data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,4 +85,5 @@ export const userController = {
   createUser,
   getUsers,
   getSingleUser,
+  updateSingleUser,
 };

@@ -39,6 +39,7 @@ const userSchema = new Schema<IUser>({
         quantity: { type: Number, required: true },
       },
     ],
+    required: false, //maked order field optional
   },
 });
 

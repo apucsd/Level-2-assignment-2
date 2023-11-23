@@ -21,9 +21,24 @@ const getSingleUserFromDB = async (id: string): Promise<IUser | null> => {
   //static method for getting single data
   return await UserModel.findOne({ id: id });
 };
+const updateSingleUserFromDB = async (
+  id: string,
+  updatedUser: IUser
+): Promise<IUser | null> => {
+  //static method for updating single data
+  console.log(updatedUser, "///////////////////////////////", id);
+  const result = await UserModel.findOneAndUpdate(
+    { id: id },
+    { $set: updatedUser },
+    { new: true }
+  );
+  // console.log(result);
+  return result;
+};
 
 export const userServices = {
   createUserToDB,
   getUserFromDB,
   getSingleUserFromDB,
+  updateSingleUserFromDB,
 };
