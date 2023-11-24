@@ -1,16 +1,24 @@
 import { z } from "zod";
 
 const userValidationSchema = z.object({
-  id: z.string().optional(),
   userId: z.string(),
   username: z.string(),
-  password: z.string(),
+  password: z
+    .string()
+    .min(8)
+    .max(20)
+    .refine((data) => data.length >= 8, {
+      message: "Password must be at least 8 characters",
+    })
+    .refine((data) => data.length <= 20, {
+      message: "Password must be at most 20 characters",
+    }),
   fullName: z.object({
     firstName: z.string().max(20),
     lastName: z.string().max(20),
   }),
   age: z.number(),
-  email: z.string(),
+  email: z.string().email({ message: "Email is not valid" }),
   isActive: z.boolean(),
   hobbies: z.array(z.string()),
   address: z.object({
